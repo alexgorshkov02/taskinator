@@ -6,7 +6,7 @@ var tasksInProgressEl = document.querySelector("#tasks-in-progress");
 var tasksCompletedEl = document.querySelector("#tasks-completed");
 var pageContentEl = document.querySelector("#page-content");
 var tasks = [];
-
+var statusCompleted = "completed"
 
 var saveTasks = function () {
   localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -16,21 +16,19 @@ var loadTasks = function () {
   tasks = localStorage.getItem('tasks');
   // tasks === null
   if (!tasks) {
-    var tasks = [];
+    tasks = [];
     return false;
   }
 
   tasks = JSON.parse(tasks);
-  // console.log(tasks);
+
   for (var i = 0; i < tasks.length; i++) {
     tasks[i].id = taskIdCounter;
-    // console.log(taskIdCounter);
-    // console.log(tasks[i]);
 
     var listItemEl = document.createElement("li");
     listItemEl.className = "task-item";
     listItemEl.setAttribute("data-task-id", tasks[i].id);
-    // console.log(listItemEl);
+
 
     var taskInfoEl = document.createElement("div");
     taskInfoEl.className = "task-info";
@@ -39,8 +37,6 @@ var loadTasks = function () {
 
     var taskActionsEl = createTaskActions(tasks[i].id);
     listItemEl.appendChild(taskActionsEl);
-    // console.log(listItemEl);
-    // console.log(tasks[i].status);
 
     if (tasks[i].status === "to do") {
       listItemEl.querySelector("select[name='status-change']").selectedIndex = 0;
@@ -48,14 +44,11 @@ var loadTasks = function () {
     } else if (tasks[i].status === "in progress") {
       listItemEl.querySelector("select[name='status-change']").selectedIndex = 1;
       tasksInProgressEl.appendChild(listItemEl);
-    } else if (tasks[i].status === "complete") {
+    } else if (tasks[i].status === statusCompleted) {
       listItemEl.querySelector("select[name='status-change']").selectedIndex = 2;
       tasksCompletedEl.appendChild(listItemEl);
     }
     taskIdCounter++;
-    console.log(listItemEl);
-    // console.log(tasks);
-    // console.log(listItemEl);
   }
 };
 
@@ -86,7 +79,6 @@ var taskFormHandler = function (event) {
       type: taskTypeInput,
       status: "to do"
     }
-
     createTaskEl(taskDataObj);
   }
 };
@@ -253,10 +245,8 @@ var deleteTask = function (taskId) {
       updatedTaskArr.push(tasks[i]);
     }
   }
-
   // reassign tasks array to be the same as updatedTaskArr
   tasks = updatedTaskArr;
-
   saveTasks();
 };
 
